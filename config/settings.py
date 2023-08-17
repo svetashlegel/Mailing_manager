@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+from conf import EMAIL, EMAIL_PASSWORD
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -126,6 +127,6 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 EMAIL_HOST = 'smtp.mail.ru'
 EMAIL_PORT = 465
-EMAIL_HOST_USER = 'sveta.shlegel@mail.ru'
-EMAIL_HOST_PASSWORD = 'ikC3PXmnYn5FHgU5qVL8'
+EMAIL_HOST_USER = EMAIL
+EMAIL_HOST_PASSWORD = EMAIL_PASSWORD
 EMAIL_USE_SSL = True
