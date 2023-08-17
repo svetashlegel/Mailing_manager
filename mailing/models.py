@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.timezone import now
 
 
 NULLABLE = {'blank': True, 'null': True}
@@ -22,6 +23,8 @@ class Mail(models.Model):
     sending_time = models.TimeField(default='12:00', verbose_name='время рассылки')
     sending_period = models.ForeignKey(Period, on_delete=models.CASCADE, verbose_name='период')
     status = models.CharField(max_length=150, default='создана', verbose_name='статус рассылки')
+    start_date = models.DateField(default=now, verbose_name='начало рассылки')
+    end_date = models.DateField(**NULLABLE, verbose_name='окончание рассылки')
 
     def __str__(self):
         return f'{self.title}'
