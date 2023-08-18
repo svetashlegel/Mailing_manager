@@ -36,6 +36,14 @@
                             <td>{{ object.end_date }}</td>
                         </tr>
                         <tr>
+                            <td class="w-25">Клиенты:</td>
+                            <td>
+                                {% for client in object.clients.all %}
+                                {{ client }}<br>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        <tr>
                             <td class="w-25">Содержание:</td>
                             <td>{{ object.content }}</td>
                         </tr>

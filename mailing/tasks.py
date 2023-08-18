@@ -7,12 +7,16 @@ from mailing.models import Mail
 
 @background
 def send_newsletter(mail_id):
+    clients_list = []
     mail_item = Mail.objects.get(pk=mail_id)
+    for client in mail_item.clients.all():
+        clients_list.append(client.email)
+    print(clients_list)
     send_mail(
         mail_item.title,
         mail_item.content,
         settings.EMAIL_HOST_USER,
-        ['shlegel.s@me.com']
+        clients_list
     )
 
 

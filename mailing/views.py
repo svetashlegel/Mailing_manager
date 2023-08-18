@@ -9,7 +9,7 @@ from mailing.funcs import revert_command
 
 class MailCreateView(CreateView):
     model = Mail
-    fields = ('title', 'content', 'sending_time', 'sending_period', 'start_date', 'end_date')
+    fields = ('title', 'content', 'sending_time', 'sending_period', 'start_date', 'end_date', 'clients')
 
     def get_success_url(self):
         return reverse('mailing:list')

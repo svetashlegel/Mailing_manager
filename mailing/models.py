@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.timezone import now
+import clients.models
 
 
 NULLABLE = {'blank': True, 'null': True}
@@ -25,6 +26,8 @@ class Mail(models.Model):
     status = models.CharField(max_length=150, default='создана', verbose_name='статус рассылки')
     start_date = models.DateField(default=now, verbose_name='начало рассылки')
     end_date = models.DateField(**NULLABLE, verbose_name='окончание рассылки')
+
+    clients = models.ManyToManyField(clients.models.Client, through="clients.Enrollment")
 
     def __str__(self):
         return f'{self.title}'

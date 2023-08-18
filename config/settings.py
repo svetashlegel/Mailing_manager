@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'background_task',
 
     'mailing',
+    'clients',
 ]
 
 MIDDLEWARE = [
