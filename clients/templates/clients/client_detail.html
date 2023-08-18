@@ -30,8 +30,8 @@
                         <tr>
                             <td class="w-25">Подписан на рассылки:</td>
                             <td>
-                                {% for client in object.clients.all %}
-                                {{ client }}<br>
+                                {% for mail in object.mails.all %}
+                                <a href="{% url 'mailing:view' mail.pk %}">{{ mail }}</a><br>
                                 {% endfor %}
                             </td>
                         </tr>

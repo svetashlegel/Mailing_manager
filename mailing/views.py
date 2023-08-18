@@ -35,7 +35,7 @@ class MailCreateView(CreateView):
 
 class MailUpdateView(UpdateView):
     model = Mail
-    fields = ('title', 'content', 'sending_time', 'sending_period')
+    fields = ('title', 'content', 'clients')
 
     def get_success_url(self):
         return reverse('mailing:view', args=[self.kwargs.get('pk')])

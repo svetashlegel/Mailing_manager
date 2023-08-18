@@ -12,6 +12,8 @@ class Client(models.Model):
     nick = models.CharField(max_length=150, verbose_name='никнейм', unique=True)
     email = models.EmailField(verbose_name='почта')
 
+    mails = models.ManyToManyField('mailing.Mail', through="Enrollment")
+
     def __str__(self):
         return f'{self.nick} ({self.email})'
 
