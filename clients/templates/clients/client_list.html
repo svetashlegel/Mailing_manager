@@ -1,0 +1,33 @@
+{% extends 'mailing/base.html' %}
+{% block content %}
+<div class="col-12 mb-5">
+    <a class="btn btn-outline-primary" href="{% url 'clients:create' %}">Добавить клиента</a>
+</div>
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">Mailing Manager</h1>
+    <p class="lead">Clients: здесь вы можете создавать, хранить, редактироваь, удалять клиентов из вашей базы данных.</p>
+</div>
+
+<div class="container">
+    <div class="row text-center">
+        {% for object in object_list %}
+        <div class="col-3">
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">{{ object.nick }}</h4>
+                </div>
+                <div class="card-body">
+                    <p class="list-unstyled mt-3 mb-4 text-start m-3">Имя: {{ object.first_name }} <br>Фамилия: {{ object.last_name }}</p>
+                    <p class="list-unstyled mt-3 mb-4 text-start m-3">Почта: {{ object.email }}</p>
+                    <div class="btn-group">
+                        <a class="btn btn-sm btn-outline-primary" href="{% url 'clients:view' object.pk %}">View</a>
+                        <a class="btn btn-sm btn-outline-primary" href="{% url 'clients:edit' object.pk %}">Edit</a>
+                        <a class="btn btn-sm btn-outline-danger" href="{% url 'clients:delete' object.pk %}">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
