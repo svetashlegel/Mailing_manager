@@ -35,3 +35,16 @@ class Mail(models.Model):
     class Meta:
         verbose_name = 'письмо'
         verbose_name_plural = 'письма'
+
+
+class Logfile(models.Model):
+    date = models.DateTimeField(verbose_name='дата и время последней попытки')
+    is_success = models.BooleanField(verbose_name='статус: успешно')
+    mail = models.ForeignKey(Mail, on_delete=models.CASCADE, verbose_name='рассылка')
+
+    def __str__(self):
+        return f'Лог {self.pk}'
+
+    class Meta:
+        verbose_name = 'лог'
+        verbose_name_plural = 'логи'
