@@ -2,7 +2,7 @@ import datetime
 from django.shortcuts import render
 from django.views.generic import CreateView, DetailView, ListView, UpdateView, DeleteView
 from django.urls import reverse
-from mailing.models import Mail
+from mailing.models import Mail, Logfile
 from mailing.tasks import send_newsletter, assign_running_status, assign_done_status
 from mailing.funcs import revert_command
 
@@ -54,3 +54,12 @@ class MailDeleteView(DeleteView):
 
     def get_success_url(self):
         return reverse('mailing:list')
+
+
+class MailLogfileDetailView(DetailView):
+    model = Mail
+    template_name = 'mailing/logfile_list.html'
+
+
+class LogfileDetailView(DetailView):
+    model = Logfile

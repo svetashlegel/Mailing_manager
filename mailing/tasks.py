@@ -20,7 +20,8 @@ def send_newsletter(mail_id):
             mail_item.title,
             mail_item.content,
             settings.EMAIL_HOST_USER,
-            clients_list
+            clients_list,
+            fail_silently=False
         )
     except Exception as err:
         print(f"Unexpected {err=}, {type(err)=}")
