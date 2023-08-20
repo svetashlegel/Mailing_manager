@@ -1,0 +1,49 @@
+{% extends 'mailing/base.html' %}
+
+{% block content %}
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">Клиент: {{ object.nick }}</h1>
+</div>
+
+<div class="container">
+    <div class="row text-start">
+        <div class="col-lg-9 col-md-6 col-sm-12">
+            <div class="card mb-4 box-shadow">
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <tr>
+                            <td class="w-25">Имя клиента:</td>
+                            <td>{{ object.first_name }}</td>
+                        </tr>
+                        <tr>
+                            <td class="w-25">Фамилия клиента:</td>
+                            <td>{{ object.last_name }}</td>
+                        </tr>
+                        <tr>
+                            <td class="w-25">Никнейм:</td>
+                            <td>{{ object.nick }}</td>
+                        </tr>
+                        <tr>
+                            <td class="w-25">Почтовый адрес:</td>
+                            <td>{{ object.email }}</td>
+                        </tr>
+                        <tr>
+                            <td class="w-25">Подписан на рассылки:</td>
+                            <td>
+                                {% for mail in object.mails.all %}
+                                <a href="{% url 'mailing:view' mail.pk %}">{{ mail }}</a><br>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-12">
+            <div class="card mb-4 box-shadow">
+                <img src="https://nsk.renessite.site/wp-content/uploads/2022/12/405-4056222_email-marketing-clipart-email-marketing-clipart-png.jpg">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

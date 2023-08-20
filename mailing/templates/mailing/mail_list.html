@@ -1,0 +1,37 @@
+{% extends 'mailing/base.html' %}
+{% load filters %}
+{% block content %}
+<div class="col-12 mb-5">
+    <a class="btn btn-outline-primary" href="{% url 'mailing:create' %}">Добавить рассылку</a>
+</div>
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">Mailing Manager</h1>
+    <p class="lead">Mailing Manager - это простой и удобный способ управления вашими рассылками.</p>
+</div>
+
+<div class="container">
+    <div class="row text-center">
+        {% for object in object_list %}
+        <div class="col-3">
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">{{ object }}</h4>
+                </div>
+                <div class="card-body">
+                    <p class="list-unstyled mt-3 mb-4 text-start m-3">Статус: {{ object.status }}</p>
+                    <p class="list-unstyled mt-3 mb-4 text-start m-3">{{ object.start_date }} - {{ object.end_date }}</p>
+                    <p class="list-unstyled mt-3 mb-4 text-start m-3">
+                        {{object.content|split}}...
+                    </p>
+                    <div class="btn-group">
+                        <a class="btn btn-sm btn-outline-primary" href="{% url 'mailing:view' object.pk %}">View</a>
+                        <a class="btn btn-sm btn-outline-primary" href="{% url 'mailing:edit' object.pk %}">Edit</a>
+                        <a class="btn btn-sm btn-outline-danger" href="{% url 'mailing:delete' object.pk %}">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

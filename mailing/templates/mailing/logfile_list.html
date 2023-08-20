@@ -1,0 +1,21 @@
+{% extends 'mailing/base.html' %}
+{% block content %}
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">Статистика по рассылке "{{ object }}"</h1>
+    <p class="lead">Здесь вы можете посмотреть отчет о проведенных рассылках.</p>
+</div>
+<ul>
+    <ol>
+        {% for logfile in object.logfile_set.all %}
+        <li>
+            <a href="{% url 'mailing:log_view' logfile.pk %}">{{ logfile }} от {{ logfile.date }}</a> -
+            {% if logfile.is_success %}
+            успешно
+            {% else %}
+            ошибка
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ol>
+</ul>
+{% endblock %}
