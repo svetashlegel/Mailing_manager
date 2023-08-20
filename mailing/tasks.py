@@ -9,6 +9,7 @@ from mailing.models import Mail, Logfile
 @background
 def send_newsletter(mail_id):
     is_suc = True
+    error = 'No errors'
     clients_list = []
     mail_item = Mail.objects.get(pk=mail_id)
     for client in mail_item.clients.all():
@@ -26,11 +27,13 @@ def send_newsletter(mail_id):
     except Exception as err:
         print(f"Unexpected {err=}, {type(err)=}")
         is_suc = False
+        error = f"Unexpected {err=}, {type(err)=}"
     finally:
-        d = datetime.now()
-        t = Logfile.objects.create(date=d, is_success=is_suc, mail_id=mail_item.pk)
-        print(t)
-        t.save()
+        send_at = datetime.now()
+        log = Logfile.objects.create(date=send_at, is_success=is_suc, mail_id=mail_item.pk,
+                                     send_from=settings.EMAIL_HOST_USER, send_to=clients_list,
+                                     mail_title=mail_item.title, mail_content=mail_item.content, error=error)
+        log.save()
 
 
 

@@ -41,6 +41,11 @@ class Logfile(models.Model):
     date = models.DateTimeField(verbose_name='дата и время последней попытки')
     is_success = models.BooleanField(verbose_name='статус: успешно')
     mail = models.ForeignKey(Mail, on_delete=models.CASCADE, verbose_name='рассылка')
+    send_from = models.EmailField(verbose_name='от кого')
+    send_to = models.TextField(verbose_name='кому')
+    mail_title = models.CharField(max_length=150, verbose_name='тема письма')
+    mail_content = models.TextField(verbose_name='текст сообщения')
+    error = models.TextField(** NULLABLE, verbose_name='текст ошибки')
 
     def __str__(self):
         return f'Лог {self.pk}'

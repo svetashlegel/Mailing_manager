@@ -10,7 +10,7 @@
         <li>
             <a href="{% url 'mailing:log_view' logfile.pk %}">{{ logfile }} от {{ logfile.date }}</a> -
             {% if logfile.is_success %}
-            успешно - {{ logfile.pk }}
+            успешно
             {% else %}
             ошибка
             {% endif %}

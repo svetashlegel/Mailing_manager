@@ -10,17 +10,36 @@
         <div class="col-lg-9 col-md-6 col-sm-12">
             <div class="card mb-4 box-shadow">
                 <div class="card-body">
-                    <table class="table table-striped">
+                    <table class="table">
+                        <tr>
+                            <td class="w-25">Рассылка:</td>
+                            <td><a href="{% url 'mailing:view' object.mail.pk %}">{{ object.mail.title }}</a><br></td>
+                        </tr>
                         <tr>
                             <td class="w-25">Дата и время попытки:</td>
-                            <td>{{ object.title }}</td>
+                            <td>{{ object.date }}</td>
                         </tr>
+                        {% if object.is_success %}
                         <tr>
                             <td class="w-25">Статус выполнения:</td>
-                            <td>{{ object.status }}</td>
+                            <td>успешно</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td class="w-25">Статус выполнения:</td>
+                            <td>ошибка</td>
                         </tr>
                         <tr>
-                            <td class="w-25">Клиенты:</td>
+                            <td class="w-25">Ошибка выполнения:</td>
+                            <td>{{ object.error }}</td>
+                        </tr>
+                        {% endif %}
+                        <tr>
+                            <td class="w-25">Почта отправителя:</td>
+                            <td>{{ object.send_from }}</td>
+                        </tr>
+                        <tr>
+                            <td class="w-25">Получатели:</td>
                             <td>
                                 {% for client in object.mail.clients.all %}
                                 {{ client }}<br>
@@ -28,8 +47,12 @@
                             </td>
                         </tr>
                         <tr>
+                            <td class="w-25">Тема письма:</td>
+                            <td>{{ object.mail_title }}</td>
+                        </tr>
+                        <tr>
                             <td class="w-25">Содержание:</td>
-                            <td>{{ object.mail.content }}</td>
+                            <td>{{ object.mail_content }}</td>
                         </tr>
                     </table>
                 </div>
