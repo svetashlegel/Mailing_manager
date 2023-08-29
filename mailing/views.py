@@ -5,6 +5,7 @@ from django.urls import reverse
 from mailing.models import Mail, Logfile
 from mailing.tasks import send_newsletter, assign_running_status, assign_done_status
 from mailing.funcs import revert_command
+from background_task.models import TaskManager, Task
 
 
 class MailCreateView(CreateView):
@@ -29,6 +30,14 @@ class MailCreateView(CreateView):
         send_newsletter(obj.pk, schedule=start, repeat=rep, repeat_until=end)
         assign_running_status(obj.pk, schedule=start)
         assign_done_status(obj.pk, schedule=end)
+
+        task_name = 'mailing.tasks.send_newsletter'
+        task_params = [[92], {}]
+        hash = Task.objects.all()
+        for h in hash:
+            print(h.task_params)
+        print(hash)
+        print('jk')
 
         return super().form_valid(form)
 
@@ -63,3 +72,14 @@ class MailLogfileDetailView(DetailView):
 
 class LogfileDetailView(DetailView):
     model = Logfile
+
+
+class TaskListView(ListView):
+    model = Task
+
+
+class TaskDeleteView(DeleteView):
+    model = Task
+
+    def get_success_url(self):
+        return reverse('mailing:tasklist')
