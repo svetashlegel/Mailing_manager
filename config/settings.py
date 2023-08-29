@@ -40,7 +40,10 @@ INSTALLED_APPS = [
 
     'mailing',
     'clients',
+    'users',
 ]
+
+SITE_NAME = '127.0.0.1:8000'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -131,3 +134,7 @@ EMAIL_PORT = PORT
 EMAIL_HOST_USER = EMAIL
 EMAIL_HOST_PASSWORD = EMAIL_PASSWORD
 EMAIL_USE_SSL = True
+
+AUTH_USER_MODEL = 'users.User'
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/'
