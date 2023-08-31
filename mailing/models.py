@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.timezone import now
 import clients.models
+from config import settings
 
 
 NULLABLE = {'blank': True, 'null': True}
@@ -28,6 +29,7 @@ class Mail(models.Model):
     end_date = models.DateField(**NULLABLE, verbose_name='окончание рассылки')
 
     clients = models.ManyToManyField(clients.models.Client, through="clients.Enrollment")
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, **NULLABLE, verbose_name='владелец')
 
     def __str__(self):
         return f'{self.title}'

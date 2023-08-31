@@ -6,6 +6,7 @@ from mailing.models import Mail, Logfile
 from mailing.tasks import send_newsletter, assign_running_status, assign_done_status
 from mailing.funcs import revert_command
 from background_task.models import TaskManager, Task
+from django.http import Http404
 
 
 class MailCreateView(CreateView):
@@ -31,6 +32,9 @@ class MailCreateView(CreateView):
         assign_running_status(obj.pk, schedule=start)
         assign_done_status(obj.pk, schedule=end)
 
+        obj.owner = self.request.user
+        obj.save()
+
         task_name = 'mailing.tasks.send_newsletter'
         task_params = [[92], {}]
         hash = Task.objects.all()
@@ -46,12 +50,21 @@ class MailUpdateView(UpdateView):
     model = Mail
     fields = ('title', 'content', 'clients')
 
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        if self.object.owner != self.request.user:
+            raise Http404("Вы не являетесь создателем данной рассылки, у вас нет прав на её редактирование.")
+        return self.object
+
     def get_success_url(self):
         return reverse('mailing:view', args=[self.kwargs.get('pk')])
 
 
 class MailListView(ListView):
     model = Mail
+
+    def get_queryset(self):
+        return super().get_queryset().filter(owner=self.request.user)
 
 
 class MailDetailView(DetailView):
@@ -60,6 +73,12 @@ class MailDetailView(DetailView):
 
 class MailDeleteView(DeleteView):
     model = Mail
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        if self.object.owner != self.request.user:
+            raise Http404("Вы не являетесь создателем данной рассылки, у вас нет прав на её удаление.")
+        return self.object
 
     def get_success_url(self):
         return reverse('mailing:list')
