@@ -3,10 +3,22 @@ from django.shortcuts import render
 from django.views.generic import CreateView, DetailView, ListView, UpdateView, DeleteView
 from django.urls import reverse
 from mailing.models import Mail, Logfile
+from clients.models import Client
+from blog.models import Article
 from mailing.tasks import send_newsletter, assign_running_status, assign_done_status
 from mailing.funcs import revert_command
 from background_task.models import TaskManager, Task
 from django.http import Http404
+
+
+def index(request):
+    context_data = {
+        'mailing_all': Mail.objects.count(),
+        'mailing_active': Mail.objects.filter(status='запущена').count(),
+        'clients': Client.objects.count(),
+        'last_articles': Article.objects.all().order_by('-id')[:3]
+    }
+    return render(request, 'mailing/main_page.html', context=context_data)
 
 
 class MailCreateView(CreateView):
