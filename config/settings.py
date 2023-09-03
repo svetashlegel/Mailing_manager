@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     'mailing',
     'clients',
+    'blog',
     'users',
 ]
 

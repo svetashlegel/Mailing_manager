@@ -1,0 +1,43 @@
+{% extends 'mailing/base.html' %}
+{% load filters %}
+{% block content %}
+<div class="col-12 mb-5">
+    {% if perms.blog.add_article %}
+    <a class="btn btn-outline-primary" href="{% url 'blog:create' %}">Добавить статью</a>
+    {% endif %}
+</div>
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">MailingBlog</h1>
+    <p class="lead">Мир не стоит на месте, и мы стараемся продолжать развиваться, шагая в ногу со временем! Узнавайте
+        больше из нашего блога о последних новинках мира технологий и новых возможностях нашего сервиса. Краткие
+        статьи всегда помогут разобраться и подобрать то, что подходит именно вам!</p>
+</div>
+
+<div class="container">
+    <div class="row text-center">
+        {% for object in object_list %}
+        <div class="col-3">
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">{{ object }}</h4>
+                </div>
+                <div class="card-body">
+                    <p class="list-unstyled mt-3 mb-4 text-start m-3">
+                        {{object.content|split}}...
+                    </p>
+                    <div class="btn-group">
+                        <a class="btn btn-sm btn-outline-primary" href="{% url 'blog:view' object.pk %}">View</a>
+                        {% if perms.blog.change_article %}
+                        <a class="btn btn-sm btn-outline-primary" href="{% url 'blog:edit' object.pk %}">Edit</a>
+                        {% endif %}
+                        {% if perms.blog.delete_article %}
+                        <a class="btn btn-sm btn-outline-danger" href="{% url 'blog:delete' object.pk %}">Delete</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
