@@ -1,6 +1,6 @@
 from django.db import models
 
-import mailing.models
+from config import settings
 
 
 NULLABLE = {'blank': True, 'null': True}
@@ -13,6 +13,7 @@ class Client(models.Model):
     email = models.EmailField(verbose_name='почта')
 
     mails = models.ManyToManyField('mailing.Mail', through="Enrollment")
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, **NULLABLE, verbose_name='владелец')
 
     def __str__(self):
         return f'{self.nick} ({self.email})'

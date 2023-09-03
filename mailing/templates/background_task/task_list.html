@@ -19,7 +19,6 @@
                 </div>
                 <div class="card-body">
                     <p class="list-unstyled mt-3 mb-4 text-start m-3">Статус: {{ object.status }}</p>
-                    <p class="list-unstyled mt-3 mb-4 text-start m-3">Создатель: {{ object.owner }}</p>
                     <p class="list-unstyled mt-3 mb-4 text-start m-3">{{ object.start_date }} - {{ object.end_date }}</p>
                     <p class="list-unstyled mt-3 mb-4 text-start m-3">
                         {{object.content|split}}...
@@ -27,7 +26,7 @@
                     <div class="btn-group">
                         <a class="btn btn-sm btn-outline-primary" href="{% url 'mailing:view' object.pk %}">View</a>
                         <a class="btn btn-sm btn-outline-primary" href="{% url 'mailing:edit' object.pk %}">Edit</a>
-                        <a class="btn btn-sm btn-outline-danger" href="{% url 'mailing:delete' object.pk %}">Delete</a>
+                        <a class="btn btn-sm btn-outline-danger" href="{% url 'mailing:deletetask' object.pk %}">Delete</a>
                     </div>
                 </div>
             </div>
