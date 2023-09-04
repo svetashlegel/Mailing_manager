@@ -2,7 +2,9 @@
 {% load filters %}
 {% block content %}
 <div class="col-12 mb-5">
+    {% if perms.mailing.add_mail %}
     <a class="btn btn-outline-primary" href="{% url 'mailing:create' %}">Добавить рассылку</a>
+    {% endif %}
 </div>
 <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
     <h1 class="display-4">Mailing Manager</h1>
@@ -26,8 +28,12 @@
                     </p>
                     <div class="btn-group">
                         <a class="btn btn-sm btn-outline-primary" href="{% url 'mailing:view' object.pk %}">View</a>
+                        {% if perms.mailing.change_mail %}
                         <a class="btn btn-sm btn-outline-primary" href="{% url 'mailing:edit' object.pk %}">Edit</a>
+                        {% endif %}
+                        {% if perms.mailing.delete_mail %}
                         <a class="btn btn-sm btn-outline-danger" href="{% url 'mailing:delete' object.pk %}">Delete</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

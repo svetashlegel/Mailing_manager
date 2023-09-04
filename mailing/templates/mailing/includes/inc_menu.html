@@ -10,9 +10,16 @@
         {% endif %}
     </nav>
     <nav class="ms-5">
+        <a class="p-2 btn btn-outline-primary" href="{% url 'mailing:index' %}">Главная</a>
+        <a class="p-2 btn btn-outline-primary" href="{% url 'blog:list' %}">Наш блог</a>
+        {% if perms.mailing.view_mail %}
         <a class="p-2 btn btn-outline-primary" href="{% url 'mailing:list' %}">Рассылки</a>
+        {% endif %}
+        {% if perms.clients.view_client %}
         <a class="p-2 btn btn-outline-primary" href="{% url 'clients:list' %}">Клиенты</a>
-        <a class="p-2 btn btn-outline-primary" href="{% url 'blog:list' %}">Блог</a>
+        {% endif %}
+        {% if perms.background_task.view_task %}
         <a class="p-2 btn btn-outline-primary" href="{% url 'mailing:tasklist' %}">Tasks</a>
+        {% endif %}
     </nav>
 </div>

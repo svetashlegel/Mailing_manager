@@ -7,8 +7,8 @@ from mailing.apps import MailingConfig
 app_name = MailingConfig.name
 
 urlpatterns = [
-    path('index/', index, name='index'),
-    path('', MailListView.as_view(), name='list'),
+    path('', index, name='index'),
+    path('list/', MailListView.as_view(), name='list'),
     #path('contacts/', contacts, name='contacts'),
     path('view/<int:pk>', MailDetailView.as_view(), name='view'),
     path('create/', MailCreateView.as_view(), name='create'),
