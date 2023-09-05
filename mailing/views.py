@@ -12,6 +12,8 @@ from mailing.funcs import revert_command
 from background_task.models import TaskManager, Task
 from django.http import Http404
 
+from users.models import User
+
 
 def index(request):
     context_data = {
@@ -21,6 +23,14 @@ def index(request):
         'last_articles': Article.objects.all().order_by('-id')[:3]
     }
     return render(request, 'mailing/main_page.html', context=context_data)
+
+
+def contacts(request):
+    context_data = {
+        'manager': User.objects.filter(groups__name='Manager')[0],
+        'content_manager': User.objects.filter(groups__name='Content_manager')[0]
+    }
+    return render(request, 'mailing/contacts.html', context=context_data)
 
 
 class MailCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
