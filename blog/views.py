@@ -1,10 +1,8 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.core.cache import cache
 from django.views.generic import CreateView, DetailView, ListView, UpdateView, DeleteView
 from blog.models import Article
 from django.urls import reverse_lazy, reverse
-
-from config import settings
+from blog.services import get_articles_cache
 
 
 class ArticleCreateView(PermissionRequiredMixin, CreateView):
@@ -27,17 +25,8 @@ class ArticleListView(ListView):
     model = Article
 
     def get_context_data(self, **kwargs):
-        if settings.CACHE_ENABLED:
-            key = 'article_list'
-            article_list = cache.get(key)
-            if article_list is None:
-                article_list = Article.objects.all()
-                cache.set(key, article_list)
-        else:
-            article_list = Article.objects.all()
-
         context = {
-            'object_list': article_list
+            'object_list': get_articles_cache()
         }
         return context
 

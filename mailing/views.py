@@ -1,5 +1,3 @@
-import datetime
-
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import render
 from django.views.generic import CreateView, DetailView, ListView, UpdateView, DeleteView
@@ -7,12 +5,10 @@ from django.urls import reverse
 from mailing.models import Mail, Logfile
 from clients.models import Client
 from blog.models import Article
-from mailing.tasks import send_newsletter, assign_running_status, assign_done_status
-from mailing.funcs import revert_command
+from users.models import User
 from background_task.models import TaskManager, Task
 from django.http import Http404
-
-from users.models import User
+from mailing.services import create_mailing
 
 
 def index(request):
@@ -43,20 +39,7 @@ class MailCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
 
     def form_valid(self, form):
         obj = form.save()
-
-        hour = obj.sending_time.hour - 3
-        start = datetime.datetime(year=obj.start_date.year, month=obj.start_date.month, day=obj.start_date.day,
-                                  hour=hour, minute=obj.sending_time.minute,
-                                  second=obj.sending_time.second)
-        end = datetime.datetime(year=obj.end_date.year, month=obj.end_date.month, day=obj.end_date.day,
-                                hour=hour, minute=obj.sending_time.minute,
-                                second=obj.sending_time.second)
-        rep = revert_command(obj.sending_period.description)
-
-        send_newsletter(obj.pk, schedule=start, repeat=rep, repeat_until=end)
-        assign_running_status(obj.pk, schedule=start)
-        assign_done_status(obj.pk, schedule=end)
-
+        create_mailing(obj)
         obj.owner = self.request.user
         obj.save()
 
