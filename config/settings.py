@@ -11,10 +11,13 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-from conf import PORT, HOST, EMAIL, EMAIL_PASSWORD, DB_NAME, DB_USER, DB_PASSWORD
+import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(BASE_DIR / '.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -82,9 +85,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': DB_NAME,
-        'USER': DB_USER,
-        'PASSWORD': DB_PASSWORD,
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
     }
 }
 
@@ -130,10 +133,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-EMAIL_HOST = HOST
-EMAIL_PORT = PORT
-EMAIL_HOST_USER = EMAIL
-EMAIL_HOST_PASSWORD = EMAIL_PASSWORD
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_USE_SSL = True
 
 AUTH_USER_MODEL = 'users.User'
@@ -141,10 +144,10 @@ LOGOUT_REDIRECT_URL = '/'
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/users/'
 
-CACHE_ENABLED = False
+CACHE_ENABLED = os.getenv('CACHE_ENABLED') == '1'
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379",
+        "LOCATION": os.getenv('CACHE_LOCATION'),
     }
 }
