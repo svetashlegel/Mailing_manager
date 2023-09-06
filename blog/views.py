@@ -1,19 +1,21 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import CreateView, DetailView, ListView, UpdateView, DeleteView
 from blog.models import Article
+from blog.forms import ArticleForm
 from django.urls import reverse_lazy, reverse
+from blog.services import get_articles_cache
 
 
 class ArticleCreateView(PermissionRequiredMixin, CreateView):
     model = Article
-    fields = ('title', 'content', 'preview', 'creation_date')
+    form_class = ArticleForm
     permission_required = 'blog.add_article'
     success_url = reverse_lazy('blog:list')
 
 
 class ArticleUpdateView(PermissionRequiredMixin, UpdateView):
     model = Article
-    fields = ('title', 'content', 'preview')
+    form_class = ArticleForm
     permission_required = 'blog.change_article'
 
     def get_success_url(self):
@@ -22,6 +24,12 @@ class ArticleUpdateView(PermissionRequiredMixin, UpdateView):
 
 class ArticleListView(ListView):
     model = Article
+
+    def get_context_data(self, **kwargs):
+        context = {
+            'object_list': get_articles_cache()
+        }
+        return context
 
 
 class ArticleDetailView(DetailView):

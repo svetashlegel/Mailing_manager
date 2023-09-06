@@ -7,7 +7,6 @@ app_name = ClientsConfig.name
 
 urlpatterns = [
     path('list/', ClientListView.as_view(), name='list'),
-    #path('contacts/', contacts, name='contacts'),
     path('view/<int:pk>', ClientDetailView.as_view(), name='view'),
     path('create/', ClientCreateView.as_view(), name='create'),
     path('edit/<int:pk>', ClientUpdateView.as_view(), name='edit'),

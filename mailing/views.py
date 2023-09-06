@@ -1,14 +1,14 @@
-import datetime
-from django.shortcuts import render
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.shortcuts import render, redirect
 from django.views.generic import CreateView, DetailView, ListView, UpdateView, DeleteView
 from django.urls import reverse
 from mailing.models import Mail, Logfile
 from clients.models import Client
 from blog.models import Article
-from mailing.tasks import send_newsletter, assign_running_status, assign_done_status
-from mailing.funcs import revert_command
-from background_task.models import TaskManager, Task
+from users.models import User
+from mailing.forms import MailCreateForm, MailUpdateForm
 from django.http import Http404
+from mailing.services import create_mailing, resume_mailing, delete_sending_task, delete_status_task
 
 
 def index(request):
@@ -21,46 +21,35 @@ def index(request):
     return render(request, 'mailing/main_page.html', context=context_data)
 
 
-class MailCreateView(CreateView):
+def contacts(request):
+    context_data = {
+        'manager': User.objects.filter(groups__name='Manager')[0],
+        'content_manager': User.objects.filter(groups__name='Content_manager')[0]
+    }
+    return render(request, 'mailing/contacts.html', context=context_data)
+
+
+class MailCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Mail
-    fields = ('title', 'content', 'sending_time', 'sending_period', 'start_date', 'end_date', 'clients')
+    form_class = MailCreateForm
+    permission_required = 'mailing.add_mail'
 
     def get_success_url(self):
         return reverse('mailing:list')
 
     def form_valid(self, form):
         obj = form.save()
-
-        hour = obj.sending_time.hour - 3
-        start = datetime.datetime(year=obj.start_date.year, month=obj.start_date.month, day=obj.start_date.day,
-                                  hour=hour, minute=obj.sending_time.minute,
-                                  second=obj.sending_time.second)
-        end = datetime.datetime(year=obj.end_date.year, month=obj.end_date.month, day=obj.end_date.day,
-                                hour=hour, minute=obj.sending_time.minute,
-                                second=obj.sending_time.second)
-        rep = revert_command(obj.sending_period.description)
-
-        send_newsletter(obj.pk, schedule=start, repeat=rep, repeat_until=end)
-        assign_running_status(obj.pk, schedule=start)
-        assign_done_status(obj.pk, schedule=end)
-
+        create_mailing(obj)
         obj.owner = self.request.user
         obj.save()
-
-        task_name = 'mailing.tasks.send_newsletter'
-        task_params = [[92], {}]
-        hash = Task.objects.all()
-        for h in hash:
-            print(h.task_params)
-        print(hash)
-        print('jk')
 
         return super().form_valid(form)
 
 
-class MailUpdateView(UpdateView):
+class MailUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Mail
-    fields = ('title', 'content', 'clients')
+    form_class = MailUpdateForm
+    permission_required = 'mailing.change_mail'
 
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
@@ -72,19 +61,25 @@ class MailUpdateView(UpdateView):
         return reverse('mailing:view', args=[self.kwargs.get('pk')])
 
 
-class MailListView(ListView):
+class MailListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Mail
+    permission_required = 'mailing.view_mail'
 
     def get_queryset(self):
-        return super().get_queryset().filter(owner=self.request.user)
+        queryset = super().get_queryset()
+        if not self.request.user.is_staff:
+            queryset = queryset.filter(owner=self.request.user)
+        return queryset
 
 
-class MailDetailView(DetailView):
+class MailDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = Mail
+    permission_required = 'mailing.view_mail'
 
 
-class MailDeleteView(DeleteView):
+class MailDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Mail
+    permission_required = 'mailing.delete_mail'
 
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
@@ -105,12 +100,15 @@ class LogfileDetailView(DetailView):
     model = Logfile
 
 
-class TaskListView(ListView):
-    model = Task
+def toggle_activity(request, pk):
+    mail = Mail.objects.get(pk=pk)
+    if mail.is_going:
+        mail.is_going = False
+        delete_status_task(mail)
+        delete_sending_task(mail)
+    else:
+        mail.is_going = True
+        resume_mailing(mail)
+    mail.save()
+    return redirect(reverse('mailing:list'))
 
-
-class TaskDeleteView(DeleteView):
-    model = Task
-
-    def get_success_url(self):
-        return reverse('mailing:tasklist')

@@ -55,7 +55,16 @@
             <div class="card mb-4 box-shadow">
                 <img src="https://www.newswire.com/blog/wp-content/uploads/2015/02/Tips-for-Creating-Your-Email-Pitch-Campaign.jpg">
             </div>
+            <div class="btn-group">
             <a href="{% url 'mailing:log_list' object.pk%}" class="btn btn-warning">Посмотреть логи текущей рассылки</a>
+            {% if perms.background_task.delete_task %}
+                    {% if object.is_going %}
+                        <a class="btn btn-danger" href="{% url 'mailing:toggle_activity' object.pk %}">Остановить рассылку</a>
+                    {% else %}
+                        <a class="btn btn-danger" href="{% url 'mailing:toggle_activity' object.pk %}">Восстановить рассылку</a>
+                    {% endif %}
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>

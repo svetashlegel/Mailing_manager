@@ -1,7 +1,9 @@
 {% extends 'mailing/base.html' %}
 {% block content %}
 <div class="col-12 mb-5">
+    {% if perms.clients.add_client %}
     <a class="btn btn-outline-primary" href="{% url 'clients:create' %}">Добавить клиента</a>
+    {% endif %}
 </div>
 <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
     <h1 class="display-4">Mailing Manager</h1>
@@ -21,8 +23,12 @@
                     <p class="list-unstyled mt-3 mb-4 text-start m-3">Почта: {{ object.email }}</p>
                     <div class="btn-group">
                         <a class="btn btn-sm btn-outline-primary" href="{% url 'clients:view' object.pk %}">View</a>
+                        {% if perms.clients.change_client %}
                         <a class="btn btn-sm btn-outline-primary" href="{% url 'clients:edit' object.pk %}">Edit</a>
+                        {% endif %}
+                        {% if perms.clients.delete_client %}
                         <a class="btn btn-sm btn-outline-danger" href="{% url 'clients:delete' object.pk %}">Delete</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

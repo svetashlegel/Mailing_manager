@@ -1,0 +1,49 @@
+{% extends 'mailing/base.html' %}
+
+{% block content %}
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">Контакты</h1>
+</div>
+
+<div class="container">
+    <div class="row text-center">
+        <div class="col-5">
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">Менеджер</h4>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title pricing-card-title">{{ manager.first_name }} {{ manager.last_name }}</h5>
+                    <p class="list-unstyled mt-3 mb-4 text-start m-3">
+                    Почта: {{ manager.email }}
+                    </p>
+                    <p class="list-unstyled mt-3 mb-4 text-start m-3">
+                    Напишите нашему по менеджеру по вопросам работы сервиса.
+                    </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <div class="row text-center">
+    <div class="col-5">
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">Контент-менеджер</h4>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title pricing-card-title">{{ content_manager.first_name }} {{ content_manager.last_name }}</h5>
+                    <p class="list-unstyled mt-3 mb-4 text-start m-3">
+                    Почта: {{ content_manager.email }}
+                    </p>
+                    <p class="list-unstyled mt-3 mb-4 text-start m-3">
+                    Напишите нашему по контент-менеджеру по вопросам актуальности информации блога и ее уточнения.
+                    </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
