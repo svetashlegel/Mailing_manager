@@ -1,13 +1,15 @@
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.views import LoginView as BaseLoginView, PasswordResetDoneView
 from django.contrib.auth.views import LogoutView as BaseLogoutView
-from django.views.generic import CreateView, UpdateView, TemplateView
+from django.views.generic import CreateView, UpdateView, TemplateView, ListView
 from django.views import View
 
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.shortcuts import redirect, render
 from users.forms import UserRegisterForm, UserForm
 from users.models import User
-from users.services import add_group, send_registration_mail, check_link, send_reset_password_mail
+from users.services import (add_group, send_registration_mail, check_link, send_reset_password_mail,
+                            send_block_notification)
 
 
 class LoginView(BaseLoginView):
@@ -71,3 +73,24 @@ def reset_password(request):
 
 class UserResetDoneView(PasswordResetDoneView):
     template_name = "users/confirmation/password_reset_done.html"
+
+
+class UserListView(PermissionRequiredMixin, ListView):
+    model = User
+    permission_required = 'users.set_active'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(groups__name='Service_user')
+        return queryset
+
+
+def toggle_users_activity(request, pk):
+    user = User.objects.get(pk=pk)
+    if user.is_active:
+        user.is_active = False
+        send_block_notification(user)
+    else:
+        user.is_active = True
+    user.save()
+    return redirect(reverse('users:list'))

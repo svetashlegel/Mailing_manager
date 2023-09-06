@@ -2,7 +2,7 @@ from django.urls import path
 
 from users.views import (LoginView, LogoutView, RegisterView, UserUpdateView, UserConfirmationSentView,
                          UserConfirmEmailView, UserConfirmedView, UserConfirmationFailedView, reset_password,
-                         UserResetDoneView)
+                         UserResetDoneView, UserListView, toggle_users_activity)
 
 from users.apps import UsersConfig
 
@@ -21,4 +21,6 @@ urlpatterns = [
 
     path('password_reset/', reset_password, name='password_reset'),
     path('password_reset/done/', UserResetDoneView.as_view(), name='password_reset_done'),
+    path('list/', UserListView.as_view(), name='list'),
+    path('toggle_users_activity/<int:pk>', toggle_users_activity, name='toggle_users_activity'),
 ]

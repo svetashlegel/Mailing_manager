@@ -18,5 +18,8 @@
         {% if perms.clients.view_client %}
         <a class="p-2 btn btn-outline-primary" href="{% url 'clients:list' %}">Клиенты</a>
         {% endif %}
+        {% if perms.users.set_active %}
+        <a class="p-2 btn btn-outline-primary" href="{% url 'users:list' %}">Пользователи</a>
+        {% endif %}
     </nav>
 </div>

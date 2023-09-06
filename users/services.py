@@ -61,3 +61,12 @@ def send_reset_password_mail(email):
     )
     user.set_password(new_password)
     user.save()
+
+
+def send_block_notification(user):
+    send_mail(
+        subject='Блокировка аккаунта',
+        message=f'Ваш аккаунт был заблокирован. Пожалуйста обратитесь к менеджеру за подробностями.',
+        from_email=settings.EMAIL_HOST_USER,
+        recipient_list=[user.email]
+    )
