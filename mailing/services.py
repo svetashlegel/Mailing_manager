@@ -1,6 +1,7 @@
 import datetime
 from mailing.tasks import send_newsletter, assign_running_status, assign_done_status
 from mailing.funcs import revert_command
+from background_task.models import Task
 
 
 def create_mailing(obj):
@@ -30,3 +31,23 @@ def resume_mailing(mail):
 
     send_newsletter(mail.pk, schedule=start, repeat=rep, repeat_until=end)
     assign_done_status(mail.pk, schedule=end)
+
+
+def delete_status_task(mail):
+    status_tasks = Task.objects.filter(task_name='mailing.tasks.assign_done_status')
+    for task in status_tasks:
+        params = task.params
+        params = params()[0][0]
+        if params == mail.pk:
+            mail_status_task = task
+            mail_status_task.delete()
+
+
+def delete_sending_task(mail):
+    send_tasks = Task.objects.filter(task_name='mailing.tasks.send_newsletter')
+    for task in send_tasks:
+        params = task.params
+        params = params()[0][0]
+        if params == mail.pk:
+            mail_status_task = task
+            mail_status_task.delete()
