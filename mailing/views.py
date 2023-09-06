@@ -7,6 +7,7 @@ from clients.models import Client
 from blog.models import Article
 from users.models import User
 from background_task.models import Task
+from mailing.forms import MailCreateForm, MailUpdateForm
 from django.http import Http404
 from mailing.services import create_mailing, resume_mailing
 
@@ -31,7 +32,7 @@ def contacts(request):
 
 class MailCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Mail
-    fields = ('title', 'content', 'sending_time', 'sending_period', 'start_date', 'end_date', 'clients')
+    form_class = MailCreateForm
     permission_required = 'mailing.add_mail'
 
     def get_success_url(self):
@@ -48,7 +49,7 @@ class MailCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
 
 class MailUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Mail
-    fields = ('title', 'content', 'clients')
+    form_class = MailUpdateForm
     permission_required = 'mailing.change_mail'
 
     def get_object(self, queryset=None):
