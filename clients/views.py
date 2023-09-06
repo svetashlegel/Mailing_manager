@@ -3,25 +3,27 @@ from django.http import Http404
 from django.views.generic import CreateView, DetailView, ListView, UpdateView, DeleteView
 from django.urls import reverse
 from clients.models import Client
+from clients.forms import ClientForm
 
 
 class ClientCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Client
-    fields = ('first_name', 'last_name', 'nick', 'email')
+    form_class = ClientForm
     permission_required = 'clients.add_client'
-
-    def get_success_url(self):
-        return reverse('clients:list')
 
     def form_valid(self, form):
         self.object = form.save()
         self.object.owner = self.request.user
         self.object.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('clients:list')
 
 
 class ClientUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Client
-    fields = ('first_name', 'last_name', 'nick', 'email')
+    form_class = ClientForm
     permission_required = 'clients.change_client'
 
     def get_object(self, queryset=None):
