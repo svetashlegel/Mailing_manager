@@ -1,14 +1,14 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import CreateView, DetailView, ListView, UpdateView, DeleteView
 from django.urls import reverse
 from mailing.models import Mail, Logfile
 from clients.models import Client
 from blog.models import Article
 from users.models import User
-from background_task.models import TaskManager, Task
+from background_task.models import Task
 from django.http import Http404
-from mailing.services import create_mailing
+from mailing.services import create_mailing, resume_mailing
 
 
 def index(request):
@@ -42,14 +42,6 @@ class MailCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         create_mailing(obj)
         obj.owner = self.request.user
         obj.save()
-
-        task_name = 'mailing.tasks.send_newsletter'
-        task_params = [[92], {}]
-        hash = Task.objects.all()
-        for h in hash:
-            print(h.task_params)
-        print(hash)
-        print('jk')
 
         return super().form_valid(form)
 
@@ -108,14 +100,37 @@ class LogfileDetailView(DetailView):
     model = Logfile
 
 
-class TaskListView(PermissionRequiredMixin, ListView):
-    model = Task
-    permission_required = 'background_task.view_task'
+def toggle_activity(request, pk):
+    mail = Mail.objects.get(pk=pk)
+    print(f'mail.pk {mail.pk}')
+    pk = str(mail.pk)
+    print(f'str.pk {pk}')
+    count = len(pk)
+    print(f'кол-во мест {count}')
+    if mail.is_going:
+        mail.is_going = False
+        status_tasks = Task.objects.filter(task_name='mailing.tasks.assign_done_status')
+        for task in status_tasks:
+            params = task.params
+            params = params()[0][0]
+            print(params)
+            if params == mail.pk:
+                mail_status_task = task
+                print(mail_status_task)
+                mail_status_task.delete()
 
+        send_tasks = Task.objects.filter(task_name='mailing.tasks.send_newsletter')
+        for task in send_tasks:
+            params = task.params
+            params = params()[0][0]
+            print(params)
+            if params == mail.pk:
+                mail_status_task = task
+                print(mail_status_task)
+                mail_status_task.delete()
+    else:
+        mail.is_going = True
+        resume_mailing(mail)
+    mail.save()
+    return redirect(reverse('mailing:list'))
 
-class TaskDeleteView(PermissionRequiredMixin, DeleteView):
-    model = Task
-    permission_required = 'background_task.delete_task'
-
-    def get_success_url(self):
-        return reverse('mailing:tasklist')

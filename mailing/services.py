@@ -16,3 +16,17 @@ def create_mailing(obj):
     send_newsletter(obj.pk, schedule=start, repeat=rep, repeat_until=end)
     assign_running_status(obj.pk, schedule=start)
     assign_done_status(obj.pk, schedule=end)
+
+
+def resume_mailing(mail):
+    hour = mail.sending_time.hour - 3
+    start = datetime.datetime(year=mail.start_date.year, month=mail.start_date.month, day=mail.start_date.day,
+                              hour=hour, minute=mail.sending_time.minute,
+                              second=mail.sending_time.second)
+    end = datetime.datetime(year=mail.end_date.year, month=mail.end_date.month, day=mail.end_date.day,
+                            hour=hour, minute=mail.sending_time.minute,
+                            second=mail.sending_time.second)
+    rep = revert_command(mail.sending_period.description)
+
+    send_newsletter(mail.pk, schedule=start, repeat=rep, repeat_until=end)
+    assign_done_status(mail.pk, schedule=end)

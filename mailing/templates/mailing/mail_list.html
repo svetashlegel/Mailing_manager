@@ -36,6 +36,13 @@
                         {% endif %}
                     </div>
                 </div>
+                {% if perms.background_task.delete_task %}
+                    {% if object.is_going %}
+                        <a href="{% url 'mailing:toggle_activity' object.pk %}">Остановить рассылку</a>
+                    {% else %}
+                        <a href="{% url 'mailing:toggle_activity' object.pk %}">Восстановить рассылку</a>
+                    {% endif %}
+                {% endif %}
             </div>
         </div>
         {% endfor %}

@@ -27,6 +27,7 @@ class Mail(models.Model):
     status = models.CharField(max_length=150, default='создана', verbose_name='статус рассылки')
     start_date = models.DateField(default=now, verbose_name='начало рассылки')
     end_date = models.DateField(**NULLABLE, verbose_name='окончание рассылки')
+    is_going = models.BooleanField(default=True, verbose_name='идет на текущий момент')
 
     clients = models.ManyToManyField(clients.models.Client, through="clients.Enrollment")
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, **NULLABLE, verbose_name='владелец')

@@ -28,7 +28,7 @@ class Command(BaseCommand):
         manager_perm_list = [view_mail, view_client, view_article, view_user, set_active, delete_task]
         content_manager_perm_list = [add_article, change_article, view_article, delete_article, view_mail]
         service_user_perm_list = [add_mail, change_mail, view_mail, delete_mail, add_client,
-                                  change_client, view_client, delete_client, view_article]
+                                  change_client, view_client, delete_client, view_article, delete_task]
 
         manager.permissions.set(manager_perm_list)
         content_manager.permissions.set(content_manager_perm_list)
