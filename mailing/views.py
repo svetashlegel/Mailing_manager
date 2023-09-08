@@ -31,7 +31,7 @@ def contacts(request):
 
 class MailCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Mail
-    form_class = MailCreateForm(request)
+    form_class = MailCreateForm
     permission_required = 'mailing.add_mail'
 
     def get_success_url(self):
