@@ -8,24 +8,22 @@ In order to retain current customers, they often use "warm-up" mailings to infor
 - `Django`
 - `psycopg2`
 - `pillow`
-- `django-background-tasks`
+- `django4-background-tasks`
 - `redis`
 - `python-dotenv`
 
 ## Set Up your personal settings
-Create a `conf.py` configuration file with your personal settings in the root of the project, according to the sample? specified in `.env.sample`.
+Create a `.env` configuration file with your personal settings in the root of the project, according to the sample, specified in `.env.sample`. Fill out the file according to your personal data. 
 
-Fill out the file according to your personal data. Create a database in postgresql. The name of the database must match the name specified in the file.
-## Backgrond Tasks connection
-After the django-background-tasks installation (`pip install django-background-tasks`), some adjustments may need to be made (this arose due to the difference in django versions):
-<br>Migrate your database: `python manage.py migrate`.
+Create a database in postgresql. The name of the database must match the name specified in the file.
+
 ## Presets
-Before starting the project, create a superuser, groups, manager, and content manager by running the following commands in the terminal:
+First of all, migrate your database: `python manage.py migrate`.<br>Before starting the project, create a superuser, groups, manager, and content manager by running the following commands in the terminal:
 - `python manage.py csu`
 - `python manage.py create_groups`
 - `python manage.py create_manager`
 - `python manage.py create_content_manager`
-Fill in the periods of mailings with the command:
+<br>Fill in the periods of mailings with the command:
 - `python manage.py fill_periods`
 Also, if you wish, you can fill the blog with a command `python manage.py loaddata blog.json` or create it by yourself!
 ## Running
